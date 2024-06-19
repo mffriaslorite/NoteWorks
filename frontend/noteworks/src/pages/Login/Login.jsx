@@ -1,14 +1,15 @@
 import React from 'react';
+import Navbar from '../../components/Navbar/Navbar';
 
 const Login = () => {
     // Your component logic here
 
-    return (
-        // Your JSX code here
-        <div>
-            <h1>Login Page</h1>
-            {/* Add your login form here */}
-        </div>
+    return(
+        <>
+            <Navbar />
+
+            
+        </>
     );
 };
 
