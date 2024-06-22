@@ -1,11 +1,12 @@
 require('dotenv').config();
 
-const config = require('./config');
+const config = require('./config.json');
 const mongoose = require('mongoose');
 
 mongoose.connect(config.connectionString);
 
 const User = require('./models/user.model');
+const Note = require('./models/note.model');
 
 const express = require('express');
 const cors = require('cors');
@@ -33,15 +34,15 @@ app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
     if(!fullName) {
-        return res.status(400).json({error: true, message: "Full Name is required"});
+        return res.status(400).json({ error: true, message: "Full Name is required" });
     }
 
     if(!email) {
-        return res.status(400).json({error: true, message: "Email is required"});
+        return res.status(400).json({ error: true, message: "Email is required" });
     }
 
     if(!password) {
-        return res.status(400).json({error: true, message: "Password is required"});
+        return res.status(400).json({ error: true, message: "Password is required" });
     }
 
     const isUser = await User.findOne({ email: email });
@@ -61,8 +62,8 @@ app.post("/create-account", async (req, res) => {
 
     await user.save();
 
-    const accessToken = jwt.sign({ email: user.email }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "30m",
+    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "36000m",
     });
 
     return res.json({
@@ -72,6 +73,88 @@ app.post("/create-account", async (req, res) => {
         message: "Registration successfully",
     });
 
+});
+
+//Login
+app.post("/login", async (req, res) => {
+
+    const { email, password } = req.body;
+
+    if(!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    if(!password) {
+        return res.status(400).json({ message: "Password is required" });
+    }
+
+    const userInfo = await User.findOne({ email: email });
+
+    if(!userInfo){
+        return res.status(400).json({ message: "User not found" });
+    }
+
+    if(userInfo.email == email && userInfo.password == password){
+        const user = {user: userInfo};
+
+        const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: "36000m",
+        });
+
+        return res.json({
+            error: false,
+            user,
+            accessToken,
+            message: "Login successfully",
+        });
+    }
+    else{
+        return res.status(400).json({ 
+            error: true, 
+            message: "Invalid Credentials" 
+        });
+    }
+
+});
+
+//Add note
+app.post("/add-note", authenticateToken, async (req, res) => {
+    const { title, content, keywords } = req.body;
+    const { user } = req.user;
+
+    if(!title) {
+        return res.status(400).json({ error:true, message: "Title is required" });
+    }
+
+    if(!content) {
+        return res.status(400).json({ error:true, message: "Content is required" });
+    }
+
+    try{
+        const note = new Note({
+            title,
+            content,
+            keywords: keywords || [],
+            userId: user.user._id,
+        });
+        
+        await note.save();
+
+        return res.json({
+            error: false,
+            note,
+            message: "Note added successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+    
+});
+
+//Edit note
+app.put("/edit-note", authenticateToken, async (req, res) => {
+    
 });
 
 app.listen(8000);
