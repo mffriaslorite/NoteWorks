@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 mongoose.connect(config.connectionString);
 
 const User = require('./models/user.model');
+const Folder = require('./models/folder.model');
 const Note = require('./models/note.model');
 
 const express = require('express');
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
     res.json({data: "hello"});
 });
 
+//*** Auth API's ***//
 //Create account
 app.post("/create-account", async (req, res) => {
 
@@ -117,6 +119,28 @@ app.post("/login", async (req, res) => {
 
 });
 
+//Get User
+app.get("/get-user", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+
+    const isUser = await User.findOne({ _id: user.user._id });
+
+    if(!isUser){
+        return res.sendStatus(401);
+    }
+
+    return res.json({
+        user: {
+            fullName: isUser.fullName, 
+            email: isUser.email,
+            "_id": isUser._id,
+            createdOn: isUser.createdOn
+        },
+        message: "User fetched successfully",
+    });
+});
+
+//*** Notes API's ***//
 //Add note
 app.post("/add-note", authenticateToken, async (req, res) => {
     const { title, content, keywords } = req.body;
@@ -153,8 +177,108 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 });
 
 //Edit note
-app.put("/edit-note", authenticateToken, async (req, res) => {
-    
+app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
+    const noteId = req.params.noteId;
+    const { title, content, keywords, isPinned } = req.body;
+    const { user } = req.user;
+
+    if(!title && !content && !keywords) {
+        return res.status(400).json({ error:true, message: "No changes provided" });
+    }
+
+    try{
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+
+        if(!note){
+            return res.status(404).json({ error:true, message: "Note not found" });
+        }
+
+        if(title) note.title = title;
+        if(content) note.content = content;
+        if(keywords) note.keywords = keywords;
+        if(isPinned) note.isPinned = isPinned;
+        
+        await note.save();
+
+        return res.json({
+            error: false,
+            note,
+            message: "Note updated successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Get All Notes
+app.get("/get-all-notes", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+
+    try{
+        const notes = await Note.find({ userId: user.user._id }).sort({ isPinned: -1 });
+
+        return res.json({
+            error: false,
+            notes,
+            message: "All notes fetched successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Delete Note
+app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
+    const noteId = req.params.noteId;
+    const { user } = req.user;
+
+    try{
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+
+        if(!note){
+            return res.status(404).json({ error:true, message: "Note not found" });
+        }
+
+        await note.deleteOne({ _id: noteId, userId: user.user._id });
+
+        return res.json({
+            error: false,
+            message: "Note deleted successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Pin Notes
+app.put("/update-note-pinned/:noteId", authenticateToken, async (req, res) => {
+    const noteId = req.params.noteId;
+    const { isPinned } = req.body;
+    const { user } = req.user;
+
+    try{
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+
+        if(!note){
+            return res.status(404).json({ error:true, message: "Note not found" });
+        }
+
+        note.isPinned = isPinned;
+        
+        await note.save();
+
+        return res.json({
+            error: false,
+            note,
+            message: "Note pinned successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
 });
 
 app.listen(8000);
