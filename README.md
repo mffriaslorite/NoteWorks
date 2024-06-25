@@ -1,8 +1,62 @@
-# React + Vite
+# NoteWorks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NoteWorks is a note-taking web application built with the MERN stack (MongoDB, Express, React, Node.js). It allows users to create, manage, and organize notes under different topics, with features such as user authentication, note searching, and summarization.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Registration and Authentication
+- Create, Edit, and Delete Topics
+- Create, Edit, and Delete Notes
+- Search Notes by Title
+- Pin Important Notes
+- Summarize Notes with AI
+- Integrated Chatbot for Q&A
+
+## Tech Stack
+
+- **Frontend**: React
+- **Backend**: Express.js, Node.js, OpenAI API for summarization and chatbot
+- **Database**: MongoDB Atlas
+
+## Installation
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/mffriaslorite/NoteWorks.git
+cd NoteWorks
+```
+
+
+### Set Up the backend
+
+```bash
+cd backend
+npm install
+```
+
+### Set Up the frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+## Running the application
+
+### Start the Backend Server
+
+```bash
+cd backend
+npm start
+```
+
+### Start the Frontend Development Server
+
+```bash
+cd ../frontend
+npm start
+```
+
+The application will be running at `http://localhost:3000`
+
