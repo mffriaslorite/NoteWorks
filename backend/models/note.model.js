@@ -8,6 +8,7 @@ const noteSchema = new Schema({
     keywords: { type: [String], default: []},
     isPinned: { type: Boolean, default: false},
     userId: { type: String, required: true},
+    folderId: { type: String, required: true},
     createdOn: { type: Date, default: new Date().getTime() },
 });
 
