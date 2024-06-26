@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 
 //*** Auth API's ***//
 //Create account
-app.post("/create-account", async (req, res) => {
+app.post("/api/v1/signup", async (req, res) => {
 
     const { fullName, email, password } = req.body;
 
@@ -78,7 +78,7 @@ app.post("/create-account", async (req, res) => {
 });
 
 //Login
-app.post("/login", async (req, res) => {
+app.post("/api/v1/login", async (req, res) => {
 
     const { email, password } = req.body;
 
@@ -120,7 +120,7 @@ app.post("/login", async (req, res) => {
 });
 
 //Get User
-app.get("/get-user", authenticateToken, async (req, res) => {
+app.get("/api/v1/users", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
     const isUser = await User.findOne({ _id: user.user._id });
@@ -140,9 +140,10 @@ app.get("/get-user", authenticateToken, async (req, res) => {
     });
 });
 
+
 //*** Folders API's ***//
 //Add folder
-app.post("/add-folder", authenticateToken, async (req, res) => {
+app.post("/api/v1/folders", authenticateToken, async (req, res) => {
     const { title, comment } = req.body;
     const { user } = req.user;
 
@@ -171,7 +172,7 @@ app.post("/add-folder", authenticateToken, async (req, res) => {
 });
 
 //Edit folder
-app.put("/edit-folder/:folderId", authenticateToken, async (req, res) => {
+app.put("/api/v1/folders/:folderId", authenticateToken, async (req, res) => {
     const folderId = req.params.folderId;
     const { title, comment } = req.body;
     const { user } = req.user;
@@ -204,7 +205,7 @@ app.put("/edit-folder/:folderId", authenticateToken, async (req, res) => {
 });
 
 //Get All Folders
-app.get("/get-all-folders", authenticateToken, async (req, res) => {
+app.get("/api/v1/folders", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
     try{
@@ -222,7 +223,7 @@ app.get("/get-all-folders", authenticateToken, async (req, res) => {
 });
 
 //Delete Folder
-app.delete("/delete-folder/:folderId", authenticateToken, async (req, res) => {
+app.delete("/api/v1/folders/:folderId", authenticateToken, async (req, res) => {
     const folderId = req.params.folderId;
     const { user } = req.user;
 
@@ -246,10 +247,9 @@ app.delete("/delete-folder/:folderId", authenticateToken, async (req, res) => {
 });
 
 
-
 //*** Notes API's ***//
 //Add note
-app.post("/:folderId/add-note", authenticateToken, async (req, res) => {
+app.post("/api/v1/folders/:folderId/notes", authenticateToken, async (req, res) => {
     const { title, content, keywords } = req.body;
     const { user } = req.user;
     const folderId = req.params.folderId;
@@ -291,7 +291,7 @@ app.post("/:folderId/add-note", authenticateToken, async (req, res) => {
 });
 
 //Edit note
-app.put("/:folderId/edit-note/:noteId", authenticateToken, async (req, res) => {
+app.put("/api/v1/folders/:folderId/notes/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { title, content, keywords, isPinned } = req.body;
     const { user } = req.user;
@@ -327,7 +327,7 @@ app.put("/:folderId/edit-note/:noteId", authenticateToken, async (req, res) => {
 });
 
 //Get All Notes
-app.get("/:folderId/get-all-notes", authenticateToken, async (req, res) => {
+app.get("/api/v1/folders/:folderId/notes", authenticateToken, async (req, res) => {
     const { user } = req.user;
     const folderId = req.params.folderId;
 
@@ -346,7 +346,7 @@ app.get("/:folderId/get-all-notes", authenticateToken, async (req, res) => {
 });
 
 //Delete Note
-app.delete("/:folderId/delete-note/:noteId", authenticateToken, async (req, res) => {
+app.delete("/api/v1/folders/:folderId/notes/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { user } = req.user;
     const folderId = req.params.folderId;
@@ -371,7 +371,7 @@ app.delete("/:folderId/delete-note/:noteId", authenticateToken, async (req, res)
 });
 
 //Pin Notes
-app.put("/:folderId/update-note-pinned/:noteId", authenticateToken, async (req, res) => {
+app.put("/api/v1/folders/:folderId/notes/:noteId/pinned", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { isPinned } = req.body;
     const { user } = req.user;
