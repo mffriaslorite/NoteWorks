@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 
 //*** Auth API's ***//
 //Create account
-app.post("/create-account", async (req, res) => {
+app.post("/api/v1/signup", async (req, res) => {
 
     const { fullName, email, password } = req.body;
 
@@ -78,7 +78,7 @@ app.post("/create-account", async (req, res) => {
 });
 
 //Login
-app.post("/login", async (req, res) => {
+app.post("/api/v1/login", async (req, res) => {
 
     const { email, password } = req.body;
 
@@ -120,7 +120,7 @@ app.post("/login", async (req, res) => {
 });
 
 //Get User
-app.get("/get-user", authenticateToken, async (req, res) => {
+app.get("/api/v1/users", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
     const isUser = await User.findOne({ _id: user.user._id });
@@ -140,11 +140,119 @@ app.get("/get-user", authenticateToken, async (req, res) => {
     });
 });
 
+
+//*** Folders API's ***//
+//Add folder
+app.post("/api/v1/folders", authenticateToken, async (req, res) => {
+    const { title, comment } = req.body;
+    const { user } = req.user;
+
+    if(!title) {
+        return res.status(400).json({ error:true, message: "Title is required" });
+    }
+
+    try{
+        const folder = new Folder({
+            title,
+            comment: comment || "",
+            userId: user.user._id,
+        });
+        
+        await folder.save();
+
+        return res.json({
+            error: false,
+            folder,
+            message: "Folder added successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Edit folder
+app.put("/api/v1/folders/:folderId", authenticateToken, async (req, res) => {
+    const folderId = req.params.folderId;
+    const { title, comment } = req.body;
+    const { user } = req.user;
+
+    if(!title && !comment) {
+        return res.status(400).json({ error:true, message: "No changes provided" });
+    }
+
+    try{
+        const folder = await Folder.findOne({ _id: folderId, userId: user.user._id });
+
+        if(!folder){
+            return res.status(404).json({ error:true, message: "Folder not found" });
+        }
+
+        if(title) folder.title = title;
+        if(comment) folder.comment = comment;
+        
+        await folder.save();
+
+        return res.json({
+            error: false,
+            folder,
+            message: "Folder updated successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Get All Folders
+app.get("/api/v1/folders", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+
+    try{
+        const folders = await Folder.find({ userId: user.user._id });
+
+        return res.json({
+            error: false,
+            folders,
+            message: "All folders fetched successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+//Delete Folder
+app.delete("/api/v1/folders/:folderId", authenticateToken, async (req, res) => {
+    const folderId = req.params.folderId;
+    const { user } = req.user;
+
+    try{
+        const folder = await Folder.findOne({ _id: folderId, userId: user.user._id });
+
+        if(!folder){
+            return res.status(404).json({ error:true, message: "Folder not found" });
+        }
+
+        await folder.deleteOne({ _id: folderId, userId: user.user._id });
+
+        return res.json({
+            error: false,
+            message: "Folder deleted successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+});
+
+
 //*** Notes API's ***//
 //Add note
-app.post("/add-note", authenticateToken, async (req, res) => {
+app.post("/api/v1/folders/:folderId/notes", authenticateToken, async (req, res) => {
     const { title, content, keywords } = req.body;
     const { user } = req.user;
+    const folderId = req.params.folderId;
 
     if(!title) {
         return res.status(400).json({ error:true, message: "Title is required" });
@@ -154,12 +262,18 @@ app.post("/add-note", authenticateToken, async (req, res) => {
         return res.status(400).json({ error:true, message: "Content is required" });
     }
 
+    const folder = await Folder.findOne({ _id: folderId, userId: user.user._id });
+    if(!folder){
+        return res.status(404).json({ error:true, message: "Folder not found" });
+    }
+
     try{
         const note = new Note({
             title,
             content,
             keywords: keywords || [],
             userId: user.user._id,
+            folderId: folderId,
         });
         
         await note.save();
@@ -177,17 +291,18 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 });
 
 //Edit note
-app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
+app.put("/api/v1/folders/:folderId/notes/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { title, content, keywords, isPinned } = req.body;
     const { user } = req.user;
+    const folderId = req.params.folderId;
 
     if(!title && !content && !keywords) {
         return res.status(400).json({ error:true, message: "No changes provided" });
     }
 
     try{
-        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id, folderId });
 
         if(!note){
             return res.status(404).json({ error:true, message: "Note not found" });
@@ -212,11 +327,12 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
 });
 
 //Get All Notes
-app.get("/get-all-notes", authenticateToken, async (req, res) => {
+app.get("/api/v1/folders/:folderId/notes", authenticateToken, async (req, res) => {
     const { user } = req.user;
+    const folderId = req.params.folderId;
 
     try{
-        const notes = await Note.find({ userId: user.user._id }).sort({ isPinned: -1 });
+        const notes = await Note.find({ folderId, userId: user.user._id }).sort({ isPinned: -1 });
 
         return res.json({
             error: false,
@@ -230,18 +346,19 @@ app.get("/get-all-notes", authenticateToken, async (req, res) => {
 });
 
 //Delete Note
-app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
+app.delete("/api/v1/folders/:folderId/notes/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { user } = req.user;
+    const folderId = req.params.folderId;
 
     try{
-        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id, folderId });
 
         if(!note){
             return res.status(404).json({ error:true, message: "Note not found" });
         }
 
-        await note.deleteOne({ _id: noteId, userId: user.user._id });
+        await note.deleteOne({ _id: noteId, userId: user.user._id, folderId });
 
         return res.json({
             error: false,
@@ -254,13 +371,14 @@ app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
 });
 
 //Pin Notes
-app.put("/update-note-pinned/:noteId", authenticateToken, async (req, res) => {
+app.put("/api/v1/folders/:folderId/notes/:noteId/pinned", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { isPinned } = req.body;
     const { user } = req.user;
+    const folderId = req.params.folderId;
 
     try{
-        const note = await Note.findOne({ _id: noteId, userId: user.user._id });
+        const note = await Note.findOne({ _id: noteId, userId: user.user._id, folderId });
 
         if(!note){
             return res.status(404).json({ error:true, message: "Note not found" });
