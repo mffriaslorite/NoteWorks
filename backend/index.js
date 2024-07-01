@@ -399,6 +399,39 @@ app.put("/api/v1/folders/:folderId/notes/:noteId/pinned", authenticateToken, asy
     }
 });
 
+//Search Notes
+app.get("/api/v1/folders/:folderId/notes/search", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+    const folderId = req.params.folderId;
+    const { query } = req.query;
+
+    if(!query) {
+        return res.status(400).json({ error:true, message: "Search query is required" });
+    }
+
+    try{
+        const matchingNotes = await Note.find({
+            userId: user.user._id,
+            folderId,
+            $or: [
+                { title: { $regex: new RegExp(query, "i") } },
+                { content: { $regex: new RegExp(query, "i") } },
+                { keywords: { $in: [query] } },
+            ],
+        });
+
+        return res.json({
+            error: false,
+            notes: matchingNotes,
+            message: "Notes fetched successfully",
+        });
+    }
+    catch(error){
+        return res.status(500).json({ error:true, message: "Internal Server Error" });
+    }
+
+});
+
 app.listen(8000);
 
 module.exports = app;
