@@ -1,11 +1,11 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import NoteCard from '../../components/Cards/NoteCard';
 import { MdAdd } from 'react-icons/md';
 import AddEditNotes from './AddEditNotes';
 import Modal from 'react-modal';
 import { useNavigate } from "react-router-dom";
+import axiosInstance from '../../utils/axios.instance';
 
 
 const Home = () => {
@@ -98,7 +98,7 @@ const navigate = useNavigate();
 //Get User Info
 const getUserInfo = async () => {
     try {
-        const response = await axiosInstance.get("/get-user");
+        const response = await axiosInstance.get("/users");
         if (response.data && response.data.user) {
             setUserInfo(response.data.user);
         }
