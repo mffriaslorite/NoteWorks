@@ -34,12 +34,11 @@ const Login = () => {
                 password: password,
             });
 
-        //Handle succesful login response
-        if (response.data && response.data.accessToken) {
-            localStorage.setItem("token", response.data.accessToken);
-            navigate("/dashboard");
-
-        }
+            //Handle succesful login response
+            if (response.data && response.data.accessToken) {
+                localStorage.setItem("token", response.data.accessToken);
+                navigate("/subjects");
+            }
         //Handle Login error
         } catch (error){
             if (error.response && error.response.data && error.response.data.message){

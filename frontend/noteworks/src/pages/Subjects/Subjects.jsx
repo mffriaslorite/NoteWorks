@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Modal from 'react-modal';
 import AddEditSubject from './AddEditSubject';
 import { MdAdd, MdEdit, MdDelete } from 'react-icons/md';
+import axiosInstance from '../../utils/axios.instance';
 
 const Subjects = () => {
     const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -40,9 +41,33 @@ const Subjects = () => {
         setSubjects(subjects.filter(subject => subject.id !== id));
     };
 
+    const [userInfo, setUserInfo] = useState(null);
+
+    const navigate = useNavigate();
+
+    //Get User Info
+    const getUserInfo = async () => {
+        try {
+            const response = await axiosInstance.get("/users");
+            if (response.data && response.data.user) {
+                setUserInfo(response.data.user);
+            }
+        } catch (error){
+            if (error.response.status === 401) {
+                localStorage.clear();
+                navigate("/login");
+            }
+        }
+    };
+
+    useEffect(() => {
+        getUserInfo();
+        return () => {};
+    }, []);
+
     return (
         <>
-            <Navbar />
+            <Navbar userInfo={userInfo} />
             <div className="container mx-auto">
                 <div className='grid grid-cols-3 gap-4 mt-8'>
                     {subjects.map((subject) => (
