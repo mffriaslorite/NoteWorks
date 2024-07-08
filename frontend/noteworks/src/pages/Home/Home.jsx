@@ -16,6 +16,8 @@ const Home = () => {
         data: null,
     });
 
+    const [allNotes, setAllNotes] = useState([]);
+
     const [notes, setNotes] = useState([
         {
             id: 1,
@@ -26,6 +28,10 @@ const Home = () => {
             isPinned: true,
         },
     ]);
+
+    const handleEdit = (noteDetails) => {
+        setOpenAddEditModal({ isShown: true, data: noteDetails, type: "edit"});
+    }
 
     const addNewNote = (note) => {
         setNotes([...notes, { ...note, id: notes.length + 1 }]);
@@ -62,7 +68,22 @@ const Home = () => {
         }
     };
 
+    // Get all notes
+    const getAllNotes = async () => {
+        try{
+            const response = await axiosInstance.get("/get-all-notes");
+
+            if (response.data && response.data.notes){
+                setAllNotes(response.data.notes);
+            }
+        } catch (error){
+            console.log("An unexpected error occured. Please try again.");
+        }
+
+    };
+
     useEffect(() => {
+        getAllNotes();
         getUserInfo();
         return () => {};
     }, []);
@@ -87,6 +108,28 @@ const Home = () => {
                     ))}
                 </div>
             </div>
+    
+        /* All Notes 
+            <div className="container mx-auto">
+                <div className='grid grid-cols-3 gap-4 mt-8'>
+                    {allNotes.map((note, index) => (
+                        <NoteCard
+                            key={note._id}
+                            title={note.title}
+                            date={note.createdOn}
+                            content={note.content}
+                            tags={note.tags}
+                            isPinned={note.isPinned}
+                            onEdit={() => setOpenAddEditModal({ isShown: true, type: "edit", data: note })}
+                            onDelete={() => deleteNote(note.id)}
+                            onPinNote={() => pinNote(note.id)}
+                        />
+                    ))}
+                </div>
+            </div>
+        */
+
+
             <button
                 className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
                 onClick={() => setOpenAddEditModal({ isShown: true, type: "add", data: null })}>
@@ -110,6 +153,7 @@ const Home = () => {
                     onClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
                     onAddNote={addNewNote}
                     onEditNote={editNote}
+                    getAllNotes={getAllNotes}
                 />
             </Modal>
         </>
