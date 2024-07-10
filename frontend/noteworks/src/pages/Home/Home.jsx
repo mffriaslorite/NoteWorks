@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import NoteCard from '../../components/Cards/NoteCard';
 import { MdAdd } from 'react-icons/md';
 import AddEditNotes from './AddEditNotes';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
 
 const Home = () => {
     const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -12,16 +14,38 @@ const Home = () => {
         data: null,
     });
 
-    const [notes, setNotes] = useState([
-        {
-            id: 1,
-            title: "Meeting on 25th June",
-            date: "23rd June, 2024",
-            content: "Hello there, there is a meeting on the 25th of June, 2024 regarding the project presentation discussion. Please Join!!",
-            tags: "#meeting",
-            isPinned: true,
-        },
-    ]);
+    const [userInfo, setUserInfo] = useState(null);
+    const [notes, setNotes] = useState([]);
+
+    const navigate = useNavigate();
+
+    // Get User Info
+    const getUserInfo = async () => {
+        const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
+    if (!token) {
+        console.log("No token found");
+        return;
+    }
+        try {
+            console.log("Fetching user info...");
+            const response = await axiosInstance.get('/users');
+            if (response.data && response.data.user) {
+                setUserInfo(response.data.user);
+            }
+        } catch (error) {
+            if (error.response.status === 401) {
+                localStorage.clear();
+                navigate("/login");
+            }
+        }
+    };
+	
+    useEffect(() => {   
+        getUserInfo();
+        return () => {};
+    }, []);
+
 
     const addNewNote = (note) => {
         setNotes([...notes, { ...note, id: notes.length + 1 }]);
@@ -41,7 +65,7 @@ const Home = () => {
 
     return (
         <>
-            <Navbar />
+            <Navbar userInfo={userInfo} />
             <div className="container mx-auto">
                 <div className='grid grid-cols-3 gap-4 mt-8'>
                     {notes.map((note, index) => (

@@ -8,15 +8,15 @@ const AddEditSubject = ({ subjectData, type, onClose, onAddSubject, onEditSubjec
 
     useEffect(() => {
         if (type === 'edit' && subjectData) {
-            setName(subjectData.name);
-            setDescription(subjectData.description);
+            setName(subjectData.title);
+            setDescription(subjectData.comment);
         } else {
             setName('');
             setDescription('');
         }
     }, [type, subjectData]);
 
-    const handleSaveSubject = () => {
+    const handleSaveSubject = async () => {
         if (!name) {
             setError('Please enter the Subject Name');
             return;
@@ -27,12 +27,22 @@ const AddEditSubject = ({ subjectData, type, onClose, onAddSubject, onEditSubjec
         }
         setError('');
 
+        const folderData = {
+            name,
+            description,
+        };
+        
+        try{
         if (type === 'edit') {
-            onEditSubject({ ...subjectData, name, description });
+            await onEditSubject({ ...subjectData, ...folderData });
         } else {
-            onAddSubject({ name, description });
+            await onAddSubject(folderData);
         }
         onClose();
+    } catch (error) {
+        console.error('Error saving subject:', error);
+        setError('Failed to save subject. Please try again.');
+    }
     };
 
     return (
@@ -72,7 +82,7 @@ const AddEditSubject = ({ subjectData, type, onClose, onAddSubject, onEditSubjec
                 <button
                     className="btn-danger font-medium mt-2 p-3 flex items-center gap-2"
                     onClick={() => {
-                        onDeleteSubject(subjectData.id);
+                        onDeleteSubject(subjectData._id);
                         onClose();
                     }}
                 >

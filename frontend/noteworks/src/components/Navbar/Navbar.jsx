@@ -2,36 +2,42 @@ import React, { useState } from 'react';
 import ProfileInfo from '../Cards/ProfileInfo';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../SearchBar/SearchBar';
+import noteworkslogo from '../../assets/noteworkslogo.png';
 
-const Navbar = () => {
-    const[searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate(); 
+const Navbar = ({ userInfo, onSearchNote }) => {
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate(); 
 
-  const onLogout = () => {
-    navigate("/login");
-  };
+    const onLogout = () => {
+        localStorage.clear();
+        navigate("/login");
+    };
 
-  const handleSearch = () => {
-  };
+    const handleSearch = () => {
+        if (searchQuery) {
+            onSearchNote(searchQuery); // Changed OnSearchNote to onSearchNote
+        }
+    };
 
-  const onClearSearch = () => {
-    setSearchQuery("")
-  };
+    const onClearSearch = () => {
+        setSearchQuery("");
+        onSearchNote(""); // Optionally clear search results when search is cleared
+    };
 
-  return (
-    <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
-      <h2 className="text-xl font-medium text-black py-2">NoteWorks</h2>
-      <SearchBar 
-        value = {searchQuery}
-        onChange={({target}) => {
-            setSearchQuery(target.value);
-        }}
-        handleSearch={handleSearch}
-        onClearSearch={onClearSearch} 
-      />
-      <ProfileInfo onLogout={onLogout} />
-    </div>
-  );
+    return (
+        <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
+            <img src={noteworkslogo} alt="logo" className="h-10 w-15" />
+            <SearchBar 
+                value={searchQuery}
+                onChange={({ target }) => {
+                    setSearchQuery(target.value);
+                }}
+                handleSearch={handleSearch}
+                onClearSearch={onClearSearch} 
+            />
+            <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
+        </div>
+    );
 };
 
 export default Navbar;
