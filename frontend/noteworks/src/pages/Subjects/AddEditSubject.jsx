@@ -21,10 +21,10 @@ const AddEditSubject = ({ subjectData, type, onClose, onAddSubject, onEditSubjec
             setError('Please enter the Subject Name');
             return;
         }
-        if (!description) {
-            setError('Please enter the Subject Description');
-            return;
-        }
+        // if (!description) {
+        //     setError('Please enter the Subject Description');
+        //     return;
+        // }
         setError('');
 
         const folderData = {

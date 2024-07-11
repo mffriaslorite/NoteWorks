@@ -118,58 +118,60 @@ const Subjects = () => {
     );
 
     return (
-        <>
+        <div className="bg-gray-100 min-h-screen">
             <Navbar userInfo={userInfo} onSearchNote={handleSearch} />
-            <div className="container mx-auto">
+            <div className="container mx-auto px-4 py-8">
                 {filteredSubjects.length === 0 ? (
                     <div className="flex flex-col items-center justify-center mt-16">
                         <img src={AddFolderImage} alt="Add Folder" className="w-32 h-32" />
                         <p className="mt-4 text-lg">Please click on the Add button to add your Subject</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-3 gap-4 mt-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
                         {filteredSubjects.map((subject) => (
-                            <div key={subject._id} className="p-4 bg-gray-200 rounded shadow">
-                                <h3 className="text-xl font-semibold">{subject.title}</h3>
-                                <p>{subject.comment}</p>
-                                <div className="flex gap-2 mt-2">
-                                    <button
-                                        className="text-gray-500 hover:text-blue-700"
-                                        onClick={() =>
-                                            setOpenAddEditModal({
-                                                isShown: true,
-                                                type: 'edit',
-                                                data: subject,
-                                            })
-                                        }
+                            <div key={subject._id} className="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-2">{subject.title}</h3>
+                                <p className="text-gray-600">{subject.comment}</p>
+                                <div className="flex justify-between items-center mt-4">
+                                    <div className="flex gap-3">
+                                        <button
+                                            className="text-gray-500 hover:text-blue-700"
+                                            onClick={() =>
+                                                setOpenAddEditModal({
+                                                    isShown: true,
+                                                    type: 'edit',
+                                                    data: subject,
+                                                })
+                                            }
+                                        >
+                                            <MdEdit className="text-2xl" />
+                                        </button>
+                                        <button
+                                            className="text-gray-500 hover:text-red-700"
+                                            onClick={() => handleDeleteConfirmation(subject._id)}
+                                        >
+                                            <MdDelete className="text-2xl" />
+                                        </button>
+                                    </div>
+                                    <Link
+                                        to={`/subjects/${subject._id}`} // Link to dynamic subject notes page
+                                        className="text-blue-500 hover:underline"
                                     >
-                                        <MdEdit className="text-2xl" />
-                                    </button>
-                                    <button
-                                        className="text-gray-500 hover:text-red-700"
-                                        onClick={() => handleDeleteConfirmation(subject._id)}
-                                    >
-                                        <MdDelete className="text-2xl" />
-                                    </button>
+                                        View Notes
+                                    </Link>
                                 </div>
-                                <Link
-                                    to={`/subjects/${subject._id}`} // Link to dynamic subject notes page
-                                    className="text-primary hover:underline mt-2 inline-block"
-                                >
-                                    View Notes
-                                </Link>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
             <button
-                className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
+                className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-500 hover:bg-blue-600 text-white fixed bottom-10 right-10 shadow-lg hover:shadow-xl transition-shadow duration-300"
                 onClick={() => {
                     setOpenAddEditModal({ isShown: true, type: 'add', data: null });
                 }}
             >
-                <MdAdd className="text-[32px] text-white" />
+                <MdAdd className="text-[32px]" />
             </button>
 
             <Modal
@@ -181,7 +183,7 @@ const Subjects = () => {
                     },
                 }}
                 contentLabel=""
-                className="w-[40%] max-h-3/4 bg-gray-100 rounded-md mx-auto mt-14 p-5 overflow-scroll"
+                className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-scroll shadow-lg"
             >
                 <AddEditSubject
                     type={openAddEditModal.type}
@@ -201,25 +203,28 @@ const Subjects = () => {
                     },
                 }}
                 contentLabel="Confirm Delete"
-                className="w-[30%] bg-gray-100 rounded-md mx-auto mt-14 p-5"
+                className="w-[30%] bg-white rounded-md mx-auto mt-14 p-5 shadow-lg"
             >
                 <div className="text-center">
-                    <h2 className="text-xl mb-4">Do you really want to delete this folder?</h2>
-                    <button
-                        className="btn-primary font-medium mr-4 p-2"
-                        onClick={confirmDelete}
-                    >
-                        Yes
-                    </button>
-                    <button
-                        className="btn-secondary font-medium p-2"
-                        onClick={cancelDelete}
-                    >
-                        No
-                    </button>
+                    <h2 className="text-xl font-semibold mb-4">Delete Folder</h2>
+                    <p className="mb-4">Are you sure you want to delete this folder?</p>
+                    <div className="flex justify-center gap-4">
+                        <button
+                            className="px-4 py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300"
+                            onClick={confirmDelete}
+                        >
+                            Yes
+                        </button>
+                        <button
+                            className="px-4 py-2 border border-gray-500 text-gray-500 rounded hover:bg-gray-500 hover:text-white transition duration-300"
+                            onClick={cancelDelete}
+                        >
+                            No
+                        </button>
+                    </div>
                 </div>
             </Modal>
-        </>
+        </div>
     );
 };
 

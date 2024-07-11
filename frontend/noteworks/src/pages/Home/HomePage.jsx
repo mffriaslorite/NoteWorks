@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar2 from '../../components/Navbar/Navbar2';
-import noteworkslogo from '../../assets/noteworkslogo.png';
+import noteworkslogo from '../../assets/nl2.png';
 
 const HomePage = () => {
   return (
-    <div>
+    <div style={styles.pageContainer}>
       <Navbar2 />
       <div style={styles.container}>
         <img src={noteworkslogo} alt="NoteWorks Logo" style={styles.logo} />
@@ -15,20 +15,19 @@ const HomePage = () => {
           <p>Create a folder for your subject and organize your notes Subject-wise.</p>
         </div>
         <div style={styles.signupContainer}>
-          <p>To register, please click on
-            <Link to="/signup" style={styles.link}> Signup</Link>
+          <p>
+            To register, please click on <Link to="/signup" style={styles.link}>Signup</Link>
           </p>
         </div>
         <div style={styles.loginContainer}>
-          <p>Already have an account? go to
-            <Link to="/login" style={styles.link}> Login</Link>
+          <p>
+            Already have an account? Go to <Link to="/login" style={styles.link}>Login</Link>
           </p>
         </div>
       </div>
     </div>
   );
 };
-
 const styles = {
   container: {
     display: 'flex',
@@ -44,7 +43,7 @@ const styles = {
   },
   title: {
     fontSize: '2.0em', // Make the title larger
-    margin: '20px 0',
+    margin: '40px 0 20px', // Add more margin on top for spacing
   },
   descriptionBox: {
     backgroundColor: '#D3D3D3', // Light gray color

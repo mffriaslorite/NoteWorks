@@ -47,38 +47,43 @@ const Login = () => {
             }
         }
     };
-  return (
+    return (
     <>
-    <Navbar2 />
+        <Navbar2 />
 
-    <div className="flex items-center justify-center mt-28">
-        <div className="w-96 border rounded bg-white px-7 py-10">
-            <form onSubmit={handleLogin}>
-                <h4 className="text-2xl mb-7">Login</h4>
-                
-                <input type = "text" placeholder="Email" className="input-box" 
-                value = {email}
-                onChange={(e) => setEmail(e.target.value)}
-                />
-                <PasswordInput 
-                value = {password}
-                onChange={(e) => setPassword(e.target.value)}
-                />
+        <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="absolute top-24 w-full max-w-md p-8 space-y-8 bg-white border border-gray-300 rounded-lg shadow-lg">
+                <form onSubmit={handleLogin}>
+                    <h4 className="text-2xl mb-7 font-semibold text-gray-800">Login</h4>
 
-                {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <PasswordInput
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
 
-                <button type = "submit" className="btn-primary">Login</button>
-                <p className="text-sm text-center mt-4">
-                    Not registered yet?{" "}
-                    <Link to = "/signUp" className = "font-medium text-primary underline">
-                    Create an Account
-                    </Link>
-                </p>
-            </form>
+                    {error && <p className="text-red-500 text-xs pb-4">{error}</p>}
+
+                    <button type="submit" className="w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        Login
+                    </button>
+                    <p className="text-sm text-center mt-4 text-gray-600">
+                        Not registered yet?{" "}
+                        <Link to="/signUp" className="font-medium text-blue-500 hover:underline">
+                            Create an Account
+                        </Link>
+                    </p>
+                </form>
+            </div>
         </div>
-    </div>
     </>
-  )
-}
+    );
+};
 
-export default Login
+export default Login;
