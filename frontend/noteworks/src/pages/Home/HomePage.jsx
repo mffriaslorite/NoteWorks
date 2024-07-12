@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar2 from '../../components/Navbar/Navbar2';
-import noteworkslogo from '../../assets/nl2.png';
+import noteworkslogo from '../../assets/noteworkslogo.png';
 
 const HomePage = () => {
   return (
