@@ -14,7 +14,7 @@ const summaryRouter = require('./routes/summary');
 app.use('/api', summaryRouter);
 
 app.listen(port, () => {
-    console.log('Server is running on port: ${port}');
+    console.log(`Server is running on port: ${port}`);
 });
 
 

@@ -3,6 +3,8 @@ const axios = require('axios');
 const router = express.Router();
 
 const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
+//TOKEN = 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
+//.env file => HUGGING_FACE_API_KEY = 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
 
 router.post('/summarize', async (req, res) => {
     const {text} = req.body;
