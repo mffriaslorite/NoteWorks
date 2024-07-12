@@ -10,6 +10,7 @@ const noteSchema = new Schema({
     userId: { type: String, required: true},
     folderId: { type: String, required: true},
     createdOn: { type: Date, default: new Date().getTime() },
+    summary: { type: String, default: '' } // Added summary field
 });
 
 module.exports = mongoose.model('Note', noteSchema);

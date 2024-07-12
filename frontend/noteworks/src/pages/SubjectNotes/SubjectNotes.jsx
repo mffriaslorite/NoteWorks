@@ -94,11 +94,6 @@ const SubjectNotes = () => {
         }
     };
 
-    const summarizeNotes = (noteId) => {
-        const noteToSummarize = notes.find(note => note._id === noteId);
-        console.log(`Summarizing Note: ${noteToSummarize.title}`);
-    };
-
     const handleDeleteConfirmation = (id) => {
         setOpenDeleteModal({ isShown: true, noteId: id });
     };
@@ -146,6 +141,28 @@ const SubjectNotes = () => {
         return [...pinnedNotes, ...unpinnedNotes];
     };
 
+    const summarizeNotes = async (noteId) => {
+        try {
+            const noteToSummarize = notes.find(note => note._id === noteId);
+            if (!noteToSummarize) {
+                console.error('Note not found');
+                return;
+            }
+
+            const response = await axiosInstance.post(`/folders/${subjectId}/notes/${noteId}/summarize`, {
+                content: noteToSummarize.content,
+            });
+
+            const summary = response.data.summary;
+            console.log(`Summary: ${summary}`);
+
+            // Update the note with the summary
+            setNotes(notes.map(note => (note._id === noteId ? { ...note, summary } : note)));
+        } catch (error) {
+            console.error('Error summarizing the note:', error);
+        }
+    };
+
     return (
         <div className="bg-gray-100 min-h-screen">
             <Navbar userInfo={userInfo} onSearchNote={onSearchNote} />
@@ -169,6 +186,7 @@ const SubjectNotes = () => {
                                     onDelete={() => handleDeleteConfirmation(note._id)}
                                     onPinNote={() => pinNote(note._id, !note.isPinned)}
                                     summarize={() => summarizeNotes(note._id)}
+                                    summary={note.summary} // Add summary to NoteCard
                                 />
                             </div>
                         ))}

@@ -12,6 +12,7 @@ const NoteCard = ({
     onDelete,
     onPinNote,
     summarize,
+    summary,
 }) => {
     return (
         <div className="border rounded p-4 bg-white hover-shadow-xl transition-all ease-in-out">
@@ -38,7 +39,7 @@ const NoteCard = ({
                 <div className="flex items-center gap-2">
                     <MdSubject
                         className="icon-btn hover:text-blue-600"
-                        onClick={summarize}
+                        onClick={summarize} // Make sure this function is called with the correct note ID
                     />
                     <MdCreate
                         className="icon-btn hover:text-green-600"
@@ -50,6 +51,12 @@ const NoteCard = ({
                     />
                 </div>
             </div>
+            {summary && (
+                <div className="mt-2 p-2 bg-gray-100 rounded">
+                    <h6 className="text-xs font-medium">Summary</h6>
+                    <p className="text-xs text-slate-600">{summary}</p>
+                </div>
+            )}
         </div>
     );
 };

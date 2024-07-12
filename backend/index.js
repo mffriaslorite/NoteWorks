@@ -9,6 +9,7 @@ const User = require('./models/user.model');
 const Folder = require('./models/folder.model');
 const Note = require('./models/note.model');
 
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -416,7 +417,7 @@ app.get("/api/v1/folders/:folderId/notes/search", authenticateToken, async (req,
             $or: [
                 { title: { $regex: new RegExp(query, "i") } },
                 { content: { $regex: new RegExp(query, "i") } },
-                { keywords: { $in: [query] } },
+                { keywords: { $regex: new RegExp(query, "i") } },
             ],
         });
 
@@ -431,6 +432,9 @@ app.get("/api/v1/folders/:folderId/notes/search", authenticateToken, async (req,
     }
 
 });
+
+const summaryRoutes = require('./routes/summary');
+app.use('/api/v1', summaryRoutes);
 
 app.listen(8000);
 

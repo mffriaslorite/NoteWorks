@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import noteworkslogo from '../../assets/nwlogo.png';
+import noteworkslogo from '../../assets/nl2.png';
 
 
 const Navbar2 = () => {
