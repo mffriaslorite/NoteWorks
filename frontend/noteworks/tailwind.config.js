@@ -13,6 +13,12 @@ export default {
       }
     },
   },
+  variants: {
+    extend: {
+      borderColor:['hover'],
+      backgroundColor:['hover'],
+    },
+  },
   plugins: [],
 }
 

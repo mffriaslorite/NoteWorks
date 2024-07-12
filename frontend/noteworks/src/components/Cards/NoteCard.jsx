@@ -1,16 +1,18 @@
+// NoteCard.jsx
 import React from 'react';
-import { MdCreate, MdDelete, MdOutlinePushPin, MdSubject } from 'react-icons/md';
+import { MdOutlinePushPin, MdSubject, MdCreate, MdDelete } from 'react-icons/md';
 
 const NoteCard = ({
     title,
     date,
     content,
-    tags,
+    keywords,
     isPinned,
     onEdit,
     onDelete,
     onPinNote,
-    summarize, // Add summarize prop
+    summarize,
+    summary,
 }) => {
     return (
         <div className="border rounded p-4 bg-white hover-shadow-xl transition-all ease-in-out">
@@ -24,14 +26,20 @@ const NoteCard = ({
                     onClick={onPinNote}
                 />
             </div>
-            <p className="text-xs text-slate-600 mt-2">{content?.slice(0, 60)}</p>
+            <div className="text-xs text-slate-600 mt-2" dangerouslySetInnerHTML={{ __html: content }} />
 
             <div className="flex items-center justify-between mt-2">
-                <div className="text-xs text-slate-500">{tags}</div>
+                <div className="text-xs text-slate-500">
+                    {keywords.map((keyword, index) => (
+                        <span key={index} className="flex items-center gap-2 text-sm text-slate-900 bg-slate-100 px-3 py-1 rounded">
+                            {keyword}
+                        </span>
+                    ))}
+                </div>
                 <div className="flex items-center gap-2">
                     <MdSubject
                         className="icon-btn hover:text-blue-600"
-                        onClick={summarize} // Call summarize function on click
+                        onClick={summarize} // Make sure this function is called with the correct note ID
                     />
                     <MdCreate
                         className="icon-btn hover:text-green-600"
@@ -43,6 +51,12 @@ const NoteCard = ({
                     />
                 </div>
             </div>
+            {summary && (
+                <div className="mt-2 p-2 bg-gray-100 rounded">
+                    <h6 className="text-xs font-medium">Summary</h6>
+                    <p className="text-xs text-slate-600">{summary}</p>
+                </div>
+            )}
         </div>
     );
 };
