@@ -5,7 +5,7 @@ import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
 import Subjects from './pages/Subjects/Subjects';
 import SubjectNotes from './pages/SubjectNotes/SubjectNotes';
-import SummaryComponent from './SummaryComponent';
+import SummaryComponent from './components/Summary/Summary';
 
 const routes = (
   <Router>
@@ -22,19 +22,13 @@ const App = () => {
   return (
     <div>
       {routes}
+      {/* <header className="App-header">
+        <h1>Note Summarizer</h1>
+      </header>
+      <SummaryComponent /> */}
     </div>
   )
 };
 
-function App(){
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Note Summarizer</h1>
-      </header>
-      <SummaryComponent />
-    </div>
-  );
-}
 
 export default App

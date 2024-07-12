@@ -432,7 +432,13 @@ app.get("/api/v1/folders/:folderId/notes/search", authenticateToken, async (req,
 
 });
 
-app.listen(8000);
+//Summarize Note
+const summaryRouter = require('./routes/summary');
+app.use('/api', authenticateToken, summaryRouter);
+
+app.listen(8000, () => {
+    console.log(`Server is running on port: ${process.env.PORT || 8000}`);
+});
 
 module.exports = app;
 

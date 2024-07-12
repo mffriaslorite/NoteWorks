@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const SummaryComponent = () => {
+const SummaryComponent = ({ folderId, noteId }) => {
     const [text, setText] = useState('');
     const [summary, setSummary] = useState('');
 
     const summarizeText = async () => {
         try {
-            const response = await axios.post('https://localhost:3000/api/summarize', {text});
+            const response = await axios.post(`/folders/${folderId}/notes/${noteId}/summarize`, { content: text });
             setSummary(response.data.summary);
         } catch (error) {
             console.error('Error summarizing the text', error);
@@ -17,15 +17,15 @@ const SummaryComponent = () => {
     return (
         <div>
             <textarea
-                value = {text}
-                onChange = {(e) => setText(e.target.vlaue)}
-                placeholder = "Enter here your text for summaraize"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Enter text to summarize"
             />
-            <button onClick = {summarizeText}>Summarize</button>
-            <h3> Summary: </h3>
-            <p> {summary} </p>
+            <button onClick={summarizeText}>Summarize</button>
+            <h3>Summary:</h3>
+            <p>{summary}</p>
         </div>
-    )
+    );
 };
 
 export default SummaryComponent;
