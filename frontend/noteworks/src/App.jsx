@@ -15,6 +15,7 @@ const routes = (
       <Route path = "/signup" exact element = {<SignUp />} />
       <Route path = "subjects/:subjectId" exact element = {<SubjectNotes />} />
       <Route path = "/homepage" exact element = {<HomePage />} />
+      <Route path = "/" exact element = {<HomePage />} />
     </Routes>
   </Router>
 );
