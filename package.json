@@ -4,7 +4,7 @@
   "description": "NoteWorks - A notes management application",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/index.js",
+    "start": "node server.js",
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "npm run build",
     "serve": "node server.js"
