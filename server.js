@@ -3,6 +3,23 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 8000;
 
+// Middleware to check if the port is in use and find an available port
+const findAvailablePort = (startPort, callback) => {
+  const server = app.listen(startPort, () => {
+    server.close(() => {
+      callback(startPort);
+    });
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      findAvailablePort(startPort + 1, callback);
+    } else {
+      callback(startPort); // default to the starting port if another error occurs
+    }
+  });
+};
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 
@@ -15,6 +32,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/frontend/build/index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+findAvailablePort(port, (availablePort) => {
+  app.listen(availablePort, () => {
+    console.log(`Server is running on port ${availablePort}`);
+  });
 });
