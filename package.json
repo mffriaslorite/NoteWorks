@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node backend/index.js",
     "build": "cd frontend && npm install && npm run build",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "serve": "node server.js"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -17,7 +18,8 @@
     "mongoose": "^8.4.3",
     "react-icons": "^5.2.1",
     "react-modal": "^3.16.1",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.24.0",
+    "serve-static": "^1.14.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.3"
