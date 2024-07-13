@@ -7,10 +7,14 @@
     "start": "node backend/index.js",
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "npm run build",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "frontend": "cd frontend/noteworks && npm run dev",
+    "server": "cd backend && npm start",
+    "final": "concurrently \"npm run frontend\" \"npm run server\""
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
