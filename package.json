@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "final": "node backend/index.js",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "npm install && cd backend && npm install && cd .. && cd frontend/noteworks && npm install && npm run build",
     "heroku-postbuild": "npm run build",
     "serve": "node server.js",
     "frontend": "cd frontend/noteworks && npm run dev",
