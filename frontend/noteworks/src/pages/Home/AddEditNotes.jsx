@@ -55,11 +55,11 @@ const AddEditNotes = ({ noteData, type, onClose, addNewNote, editNote }) => {
     };
 
     return (
-        <div className="relative">
+        <div className="relative max-h-[80vh] flex flex-col">
             <button className="w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-50" onClick={onClose}>
                 <MdClose className="text-xl text-slate-400" />
             </button>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 flex-shrink-0">
                 <label className="input-label">Title</label>
                 <input
                     type="text"
@@ -69,25 +69,24 @@ const AddEditNotes = ({ noteData, type, onClose, addNewNote, editNote }) => {
                     onChange={({ target }) => setTitle(target.value)}
                 />
             </div>
-
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="flex flex-col gap-2 mt-4 flex-grow overflow-hidden">
                 <label className="input-label">Content</label>
-                <ReactQuill
-                    theme="snow"
-                    value={content}
-                    onChange={setContent}
-                    placeholder="Enter some notes..."
-                />
+                <div className="flex-grow overflow-auto">
+                    <ReactQuill
+                        theme="snow"
+                        value={content}
+                        onChange={setContent}
+                        placeholder="Enter some notes..."
+                        style={{ height: '100%', maxHeight: '400px' }} // Adjust the maxHeight as needed
+                    />
+                </div>
             </div>
-
-            <div className="mt-3">
+            <div className="mt-3 flex-shrink-0">
                 <label className="input-label">Keywords</label>
                 <TagInput tags={keywords} setTags={setKeywords} />
             </div>
-
-            {error && <p className="text-red-500 mt-2">{error}</p>}
-
-            <div className="flex justify-end gap-4 mt-6">
+            {error && <p className="text-red-500 mt-2 flex-shrink-0">{error}</p>}
+            <div className="flex justify-end gap-4 mt-6 flex-shrink-0">
                 <button
                     className="btn-primary font-medium p-2 w-[100px]"
                     onClick={handleSaveNote}
