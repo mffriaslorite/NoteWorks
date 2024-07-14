@@ -4,7 +4,7 @@
   <img src="logo-color.png" alt="NoteWorks Logo" width="400"/>
 </div>
 
-NoteWorks is a comprehensive note-taking web application designed to help users create, manage, and organize their notes efficiently. Built with the MERN stack (MongoDB, Express, React, Node.js), NoteWorks offers robust features like user authentication, note searching, AI-powered summarization, and an integrated chatbot for Q&A.
+NoteWorks is a comprehensive note-taking web application designed to help users create, manage, and organize their notes efficiently. Built with the MERN stack (MongoDB, Express, React, Node.js), NoteWorks offers robust features like user authentication, note searching, AI-powered summarization.
 
 ## Features
 
