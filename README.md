@@ -78,4 +78,6 @@ Web Surfers
 - [@mffriaslorite](https://github.com/mffriaslorite)
 - [@R0bert123](https://github.com/R0bert123)
 
-![Logo](grouplogo.jpeg)
+<div align="center">
+  <img src="grouplogo.jpeg" alt="Logo" width="200" style="margin-top: 20px;"/>
+</div>
